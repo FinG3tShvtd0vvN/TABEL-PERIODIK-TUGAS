@@ -1,0 +1,462 @@
+:root {
+    /* Color Palette for element categories */
+    --alkali-metal: #ff6b6b;
+    --alkaline-earth: #feca57;
+    --transition-metal: #48dbfb;
+    --post-transition: #0abde3;
+    --metalloid: #1dd1a1;
+    --nonmetal: #5f27cd;
+    --halogen: #ff9ff3;
+    --noble-gas: #e58e26;
+    --lanthanide: #ffc048;
+    --actinide: #ff5252;
+    --unknown: #8395a7;
+
+    /* Liquid Glass Variables */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-blur: blur(12px);
+
+    /* Background Theme */
+    --bg-color: #0f172a;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Animated Blobs for Liquid Feel */
+.background-decorations {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: float 20s infinite ease-in-out alternate;
+}
+
+.blob-1 {
+    width: 500px;
+    height: 500px;
+    background: #4facfe;
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    width: 400px;
+    height: 400px;
+    background: #00f2fe;
+    bottom: -100px;
+    right: 10%;
+    animation-delay: -5s;
+}
+
+.blob-3 {
+    width: 600px;
+    height: 600px;
+    background: #667eea;
+    top: 30%;
+    left: 40%;
+    opacity: 0.3;
+    animation-delay: -10s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
+}
+
+/* App Layout */
+.app-container {
+    display: flex;
+    gap: 30px;
+    width: 95%;
+    max-width: 1600px;
+    height: 90vh;
+    padding: 20px;
+    border-radius: 24px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+.table-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    color: rgba(255,255,255,0.8);
+}
+
+/* Periodic Table Grid */
+.periodic-table {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+}
+
+.element {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05); /* Base glass */
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
+}
+
+/* Hover Liquid Glass Effect */
+.element::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+.element:hover {
+    transform: translateY(-5px) scale(1.05) translateZ(20px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(255,255,255,0.2);
+    z-index: 10;
+    border-color: rgba(255,255,255,0.4);
+}
+
+.element:hover::before {
+    opacity: 1;
+}
+
+.element.selected {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255,255,255,0.5), inset 0 0 15px rgba(255,255,255,0.4);
+    z-index: 5;
+    border-color: rgba(255,255,255,0.8);
+}
+
+.el-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+}
+
+.el-symbol {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: auto 0;
+}
+
+.el-name {
+    font-size: 0.55rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.8;
+}
+
+/* Hover Tooltip (Image 2) */
+.element-tooltip {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+    width: 120px;
+    height: 120px;
+    background: rgba(40, 20, 30, 0.85); /* Slightly reddish dark bg like in ref */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s;
+    transform-origin: center;
+}
+
+.element-tooltip.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.tooltip-symbol {
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    line-height: 1;
+}
+
+.tooltip-name {
+    font-size: 0.85rem;
+    text-align: center;
+    color: #cbd5e1;
+}
+
+/* Right Side Panel (Image 1) */
+.info-panel {
+    width: 350px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--glass-shadow);
+    overflow-y: auto;
+}
+
+.info-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.info-panel::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.info-placeholder {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.info-title {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 5px;
+}
+
+.superscript {
+    font-size: 1rem;
+    vertical-align: super;
+}
+
+.info-category {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 25px;
+}
+
+.category-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px currentColor; /* glow effect */
+}
+
+/* Bohr Model Container */
+.info-model {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.bohr-model {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.nucleus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle at 30% 30%, #ff4757, #ff6b81);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 0 20px #ff4757;
+}
+
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 50%;
+    animation: rotate infinite linear;
+}
+
+.electron {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #4facfe;
+    border-radius: 50%;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px #4facfe;
+}
+
+@keyframes rotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.detail-subtitle {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.detail-description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: rgba(255,255,255,0.9);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Category Colors Classes */
+.alkali-metal { background: rgba(255, 107, 107, 0.15); border-color: rgba(255, 107, 107, 0.3); }
+.alkaline-earth { background: rgba(254, 202, 87, 0.15); border-color: rgba(254, 202, 87, 0.3); }
+.transition-metal { background: rgba(72, 219, 251, 0.15); border-color: rgba(72, 219, 251, 0.3); }
+.post-transition { background: rgba(10, 189, 227, 0.15); border-color: rgba(10, 189, 227, 0.3); }
+.metalloid { background: rgba(29, 209, 161, 0.15); border-color: rgba(29, 209, 161, 0.3); }
+.nonmetal { background: rgba(95, 39, 205, 0.15); border-color: rgba(95, 39, 205, 0.3); }
+.halogen { background: rgba(255, 159, 243, 0.15); border-color: rgba(255, 159, 243, 0.3); }
+.noble-gas { background: rgba(229, 142, 38, 0.15); border-color: rgba(229, 142, 38, 0.3); }
+.lanthanide { background: rgba(255, 192, 72, 0.15); border-color: rgba(255, 192, 72, 0.3); }
+.actinide { background: rgba(255, 82, 82, 0.15); border-color: rgba(255, 82, 82, 0.3); }
+.unknown { background: rgba(131, 149, 167, 0.15); border-color: rgba(131, 149, 167, 0.3); }
+
+/* Corresponding colors for dots */
+.dot-alkali-metal { background: #ff6b6b; color: #ff6b6b; }
+.dot-alkaline-earth { background: #feca57; color: #feca57; }
+.dot-transition-metal { background: #48dbfb; color: #48dbfb; }
+.dot-post-transition { background: #0abde3; color: #0abde3; }
+.dot-metalloid { background: #1dd1a1; color: #1dd1a1; }
+.dot-nonmetal { background: #5f27cd; color: #5f27cd; }
+.dot-halogen { background: #ff9ff3; color: #ff9ff3; }
+.dot-noble-gas { background: #e58e26; color: #e58e26; }
+.dot-lanthanide { background: #ffc048; color: #ffc048; }
+.dot-actinide { background: #ff5252; color: #ff5252; }
+.dot-unknown { background: #8395a7; color: #8395a7; }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .info-panel {
+        width: 100%;
+        max-height: 400px;
+    }
+}
